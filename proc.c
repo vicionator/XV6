@@ -38,7 +38,7 @@ allocproc(void)
   char *sp;
 
   acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  for(p = &ptable.proc[NPROC-1]; p >= 0; p--)
     if(p->state == UNUSED)
       goto found;
   release(&ptable.lock);
@@ -149,7 +149,7 @@ fork(void)
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
 
-  for(i = 0; i < NOFILE; i++)
+  for(i = 0; i <NOFILE; i++)
     if(proc->ofile[i])
       np->ofile[i] = filedup(proc->ofile[i]);
   np->cwd = idup(proc->cwd);
